@@ -1,58 +1,124 @@
-let fantasma;
-let crianca;
-let luzLigada = true;
-let posFantasmaX;
-let posFantasmaY;
+//VARIAVEIS
+let imagemFantasma;
+let imagemCrianca;
+let somMusicaTerror;
+let luzEstaLigada = true;
+
+// POSIÇÃO E MOVIMENTO DO FANTASMA
+let posicaoXFantasma;
+let posicaoYFantasma;
 let velocidadeFantasma = 1.5;
-let sentido = 1;
+let sentidoDoMovimento; // 1 = vai para direita, -1 = vai para esquerda
 
-let tamFantasmaW = 220;
-let tamFantasmaH = 220;
+// TAMANHO DAS IMAGENS
+let larguraFantasma = 220;
+let alturaFantasma = 220;
+let larguraCrianca = 200;
+let alturaCrianca = 200;
 
-let tamCriancaW = 200;
-let tamCriancaH = 200;
+// OBJETO CENTRAL
+let posicaoXObjetoCentral;
+let posicaoYObjetoCentral;
+let larguraObjetoCentral = 700;
+let alturaObjetoCentral = 90;
 
-let musicaTerror;
 
 function preload() {
-  fantasma = loadImage('../imagens/corredorassombrado/fantasma.png');
-  crianca = loadImage('../imagens/corredorassombrado/crianca.png');
-  musicaTerror = loadSound('../sons/terror_musica.mp3');
+  imagemFantasma = loadImage('../imagens/corredorassombrado/fantasma.png');
+  imagemCrianca = loadImage('../imagens/corredorassombrado/crianca.png');
+  somMusicaTerror = loadSound('../sons/terror_musica.mp3');
 }
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  posFantasmaY = 10;
-  posFantasmaX = -tamFantasmaW;
+  
+  // Posição inicial do fantasma
+  posicaoYFantasma = 10;
+  posicaoXFantasma = -larguraFantasma; // começa fora da tela à esquerda
+  sentidoDoMovimento = 1;
+
+  posicaoXObjetoCentral = (width - larguraObjetoCentral) / 2;
+  posicaoYObjetoCentral = height * 0.42;
 }
 
-function tocarMusicaTerror() {
-  if (!musicaTerror.isPlaying()) {
+function tocarMusica() {
+  if (!somMusicaTerror.isPlaying()) {
     userStartAudio();
-    musicaTerror.setVolume(0.4);
-    musicaTerror.loop();
+    somMusicaTerror.setVolume(0.4);
+    somMusicaTerror.loop();
   }
 }
 
 function draw() {
-  tocarMusicaTerror();
+  tocarMusica();
 
   background(40, 45, 50);
 
-  let portaW = 120;
-  let portaH = 200;
-  let portaEsqX = width * 0.15;
-  let portaDirX = width * 0.7;
-  let portaY = height * 0.25;
+  // PORTAS
+  let larguraPorta = 120;
+  let alturaPorta = 200;
+  let posicaoXPortaEsquerda = width * 0.15;
+  let posicaoXPortaDireita = width * 0.7;
+  // Portas no final da parte cinza
+  let posicaoYPortas = height / 2 - alturaPorta - 10;
 
-  let meioEntrePortas = (portaEsqX + portaW + portaDirX) / 2;
-  let espacoEntrePortas = portaDirX - (portaEsqX + portaW);
+  // JANELA
+  let centroEntreAsPortas = (posicaoXPortaEsquerda + larguraPorta + posicaoXPortaDireita) / 2;
+  let espacoEntreAsPortas = posicaoXPortaDireita - (posicaoXPortaEsquerda + larguraPorta);
+  let larguraJanela = espacoEntreAsPortas * 0.92;
+  let alturaJanela = 230;
+  let posicaoXJanela = centroEntreAsPortas - larguraJanela / 2;
+  let posicaoYJanela = 20;
 
-  let janelaW = espacoEntrePortas * 0.92;
-  let janelaH = 230;
-  let janelaX = meioEntrePortas - janelaW / 2;
-  let janelaY = 20;
+  // QUADROS DADOS
+  let larguraQuadro = 170;
+  let alturaQuadro = 250;
+  let distanciaQuadroDaPorta = 90;
+  let quantoSubirOsQuadros = 60;
 
+  // QUADRO ESQUERDO
+  let posicaoXQuadroEsquerdo = posicaoXPortaEsquerda - larguraQuadro - distanciaQuadroDaPorta;
+  let posicaoYQuadroEsquerdo = posicaoYPortas - quantoSubirOsQuadros;
+
+  fill(45, 30, 15);
+  rect(posicaoXQuadroEsquerdo - 12, posicaoYQuadroEsquerdo - 12, larguraQuadro + 24, alturaQuadro + 24, 6);
+  fill(85, 60, 30);
+  rect(posicaoXQuadroEsquerdo - 6, posicaoYQuadroEsquerdo - 6, larguraQuadro + 12, alturaQuadro + 12, 4);
+  
+  fill(220, 215, 200);
+  rect(posicaoXQuadroEsquerdo, posicaoYQuadroEsquerdo, larguraQuadro, alturaQuadro, 3);
+  
+  stroke(30, 30, 30);
+  strokeWeight(2.5);
+  noFill();
+  rect(posicaoXQuadroEsquerdo + 20, posicaoYQuadroEsquerdo + 20, larguraQuadro - 40, alturaQuadro - 40);
+  line(posicaoXQuadroEsquerdo + 40, posicaoYQuadroEsquerdo + 50, posicaoXQuadroEsquerdo + larguraQuadro - 40, posicaoYQuadroEsquerdo + 50);
+  line(posicaoXQuadroEsquerdo + 40, posicaoYQuadroEsquerdo + 100, posicaoXQuadroEsquerdo + larguraQuadro - 40, posicaoYQuadroEsquerdo + 100);
+  line(posicaoXQuadroEsquerdo + 40, posicaoYQuadroEsquerdo + 150, posicaoXQuadroEsquerdo + larguraQuadro - 40, posicaoYQuadroEsquerdo + 150);
+  circle(posicaoXQuadroEsquerdo + larguraQuadro/2, posicaoYQuadroEsquerdo + 125, 60);
+
+  // QUADRO DIREITO
+  let posicaoXQuadroDireito = posicaoXPortaDireita + larguraPorta + distanciaQuadroDaPorta;
+  let posicaoYQuadroDireito = posicaoYPortas - quantoSubirOsQuadros;
+
+  fill(45, 30, 15);
+  rect(posicaoXQuadroDireito - 12, posicaoYQuadroDireito - 12, larguraQuadro + 24, alturaQuadro + 24, 6);
+  fill(85, 60, 30);
+  rect(posicaoXQuadroDireito - 6, posicaoYQuadroDireito - 6, larguraQuadro + 12, alturaQuadro + 12, 4);
+  
+  fill(220, 215, 200);
+  rect(posicaoXQuadroDireito, posicaoYQuadroDireito, larguraQuadro, alturaQuadro, 3);
+  
+  stroke(30, 30, 30);
+  strokeWeight(2.5);
+  noFill();
+  rect(posicaoXQuadroDireito + 20, posicaoYQuadroDireito + 20, larguraQuadro - 40, alturaQuadro - 40);
+  line(posicaoXQuadroDireito + 40, posicaoYQuadroDireito + 40, posicaoXQuadroDireito + larguraQuadro - 40, posicaoYQuadroDireito + alturaQuadro - 40);
+  line(posicaoXQuadroDireito + larguraQuadro - 40, posicaoYQuadroDireito + 40, posicaoXQuadroDireito + 40, posicaoYQuadroDireito + alturaQuadro - 40);
+  ellipse(posicaoXQuadroDireito + larguraQuadro/2, posicaoYQuadroDireito + alturaQuadro/2, 50, 50);
+
+
+  // CHÃO / PARTE DE BAIXO DA TELA
   noStroke();
   fill(120, 20, 20);
   rect(0, height / 2, width, height / 2);
@@ -64,174 +130,143 @@ function draw() {
 
   stroke(90, 0, 0, 80);
   strokeWeight(2);
-
-  for (let i = 0; i < 20; i++) {
-    let y = height / 2 + i * 25;
-    line(0, y, width, y);
+  for (let linha = 0; linha < 20; linha++) {
+    let posicaoYLinha = height / 2 + linha * 25;
+    line(0, posicaoYLinha, width, posicaoYLinha);
   }
 
+  // JANELA
   noStroke();
-
   fill(15, 15, 25);
-  rect(janelaX, janelaY, janelaW, janelaH, 6);
+  rect(posicaoXJanela, posicaoYJanela, larguraJanela, alturaJanela, 6);
 
   fill(255, 255, 255, 10);
-  rect(janelaX + 12, janelaY + 12, janelaW - 24, janelaH - 24, 4);
+  rect(posicaoXJanela + 12, posicaoYJanela + 12, larguraJanela - 24, alturaJanela - 24, 4);
 
-  fill(180, 180, 200, 18);
-  ellipse(janelaX + janelaW * 0.25, janelaY + janelaH * 0.65, janelaW * 0.45, janelaH * 0.25);
-  ellipse(janelaX + janelaW * 0.55, janelaY + janelaH * 0.55, janelaW * 0.50, janelaH * 0.22);
-  ellipse(janelaX + janelaW * 0.78, janelaY + janelaH * 0.72, janelaW * 0.40, janelaH * 0.20);
-
-  noFill();
-  stroke(140);
-  strokeWeight(3);
-  rect(janelaX, janelaY, janelaW, janelaH, 6);
-
-  stroke(90);
-  strokeWeight(2);
-  line(janelaX + janelaW * 0.25, janelaY, janelaX + janelaW * 0.25, janelaY + janelaH);
-  line(janelaX + janelaW * 0.50, janelaY, janelaX + janelaW * 0.50, janelaY + janelaH);
-  line(janelaX + janelaW * 0.75, janelaY, janelaX + janelaW * 0.75, janelaY + janelaH);
-  line(janelaX, janelaY + janelaH * 0.50, janelaX + janelaW, janelaY + janelaH * 0.50);
-
-  noStroke();
-  fill(0, 0, 0, 80);
-  rect(janelaX, janelaY, janelaW, 25);
-  rect(janelaX, janelaY + janelaH - 25, janelaW, 25);
-
+  // CORTINAS
   fill(140, 0, 0, 200);
-  for (let i = 0; i < 8; i++) {
-    rect(janelaX + i * 12, janelaY, 18, janelaH);
-    rect(janelaX + janelaW - 100 + i * 12, janelaY, 18, janelaH);
+  for (let parte = 0; parte < 8; parte++) {
+    rect(posicaoXJanela + (parte * 12), posicaoYJanela, 12, alturaJanela);
+    rect(posicaoXJanela + larguraJanela - 96 + (parte * 12), posicaoYJanela, 12, alturaJanela);
   }
 
   fill(80, 0, 0, 120);
-  for (let i = 0; i < 8; i++) {
-    rect(janelaX + i * 12, janelaY, 9, janelaH);
-    rect(janelaX + janelaW - 100 + i * 12, janelaY, 9, janelaH);
+  for (let parte = 0; parte < 8; parte++) {
+    rect(posicaoXJanela + (parte * 12), posicaoYJanela, 6, alturaJanela);
+    rect(posicaoXJanela + larguraJanela - 96 + (parte * 12), posicaoYJanela, 6, alturaJanela);
   }
 
-  if (luzLigada) {
+  stroke(140);
+  strokeWeight(3);
+  noFill();
+  rect(posicaoXJanela, posicaoYJanela, larguraJanela, alturaJanela, 6);
+
+  stroke(90);
+  strokeWeight(2);
+  line(posicaoXJanela + larguraJanela * 0.25, posicaoYJanela, posicaoXJanela + larguraJanela * 0.25, posicaoYJanela + alturaJanela);
+  line(posicaoXJanela + larguraJanela * 0.50, posicaoYJanela, posicaoXJanela + larguraJanela * 0.50, posicaoYJanela + alturaJanela);
+  line(posicaoXJanela + larguraJanela * 0.75, posicaoYJanela, posicaoXJanela + larguraJanela * 0.75, posicaoYJanela + alturaJanela);
+  line(posicaoXJanela, posicaoYJanela + alturaJanela * 0.50, posicaoXJanela + larguraJanela, posicaoYJanela + alturaJanela * 0.50);
+
+
+  // DESENHA O OBJETO CENTRAL
+  noStroke();
+  fill(30, 30, 35);
+  rect(posicaoXObjetoCentral, posicaoYObjetoCentral, larguraObjetoCentral, alturaObjetoCentral);
+  
+  stroke(0);
+  strokeWeight(4);
+  noFill();
+  rect(posicaoXObjetoCentral, posicaoYObjetoCentral, larguraObjetoCentral, alturaObjetoCentral);
+  
+  line(posicaoXObjetoCentral + 60, posicaoYObjetoCentral, posicaoXObjetoCentral + 40, posicaoYObjetoCentral + alturaObjetoCentral);
+  line(posicaoXObjetoCentral + larguraObjetoCentral - 60, posicaoYObjetoCentral, posicaoXObjetoCentral + larguraObjetoCentral - 40, posicaoYObjetoCentral + alturaObjetoCentral);
+  rect(posicaoXObjetoCentral + 80, posicaoYObjetoCentral + 10, larguraObjetoCentral - 160, alturaObjetoCentral - 20);
+
+
+  // LUZ DA JANELA
+  if (luzEstaLigada) {
     stroke(255, 255, 240);
     strokeWeight(4);
     randomSeed(frameCount * 0.1);
-
-    for (let i = 0; i < 12; i++) {
-      let px = random(janelaX + 30, janelaX + janelaW - 30);
-      let py = random(janelaY + 20, janelaY + janelaH - 20);
-      point(px, py);
+    for (let ponto = 0; ponto < 12; ponto++) {
+      let posicaoXPonto = random(posicaoXJanela + 30, posicaoXJanela + larguraJanela - 30);
+      let posicaoYPonto = random(posicaoYJanela + 20, posicaoYJanela + alturaJanela - 20);
+      point(posicaoXPonto, posicaoYPonto);
     }
   }
 
-  posFantasmaX += velocidadeFantasma * sentido;
-  if (posFantasmaX > width) sentido = -1;
-  if (posFantasmaX < -tamFantasmaW) sentido = 1;
+  // MOVIMENTO DO FANTASMA
+  posicaoXFantasma += velocidadeFantasma * sentidoDoMovimento;
+  if (posicaoXFantasma > width) sentidoDoMovimento = -1;
+  if (posicaoXFantasma < -larguraFantasma) sentidoDoMovimento = 1;
 
   noStroke();
-  fill(luzLigada ? 240 : 80);
-  ellipse(janelaX + janelaW / 2, janelaY + janelaH * 0.45, 130, 130);
+  fill(luzEstaLigada ? 240 : 80);
+  ellipse(posicaoXJanela + larguraJanela / 2, posicaoYJanela + alturaJanela * 0.45, 130, 130);
 
+  // INTERRUPTOR
   fill(230);
-  rect(width * 0.7 + 130, height * 0.25 + 80, 20, 40);
-
+  rect(width * 0.7 + 130, posicaoYPortas + 80, 20, 40);
   fill(80);
-  if (luzLigada) {
-    rect(width * 0.7 + 136, height * 0.25 + 85, 8, 12);
-  } else {
-    rect(width * 0.7 + 136, height * 0.25 + 103, 8, 12);
-  }
+  rect(width * 0.7 + 136, luzEstaLigada ? posicaoYPortas + 85 : posicaoYPortas + 103, 8, 12);
 
-  image(crianca, width / 2 - tamCriancaW / 2, height - tamCriancaH - 20, tamCriancaW, tamCriancaH);
+  // CRIANÇA NO CHÃO
+  image(imagemCrianca, width / 2 - larguraCrianca / 2, height - alturaCrianca - 20, larguraCrianca, alturaCrianca);
 
-  if (!luzLigada) {
+  // TELA PRETA QUANDO A LUZ APAGA
+  if (!luzEstaLigada) {
     fill(0, 0, 0, 220);
     rect(0, 0, width, height);
-
-    image(fantasma, posFantasmaX, posFantasmaY, tamFantasmaW, tamFantasmaH);
+    image(imagemFantasma, posicaoXFantasma, posicaoYFantasma, larguraFantasma, alturaFantasma);
   }
 
+  // DESENHA AS PORTAS
   noStroke();
+  fill(60, 35, 20);
+  rect(posicaoXPortaEsquerda, posicaoYPortas, larguraPorta, alturaPorta, 5);
+  fill(85, 60, 30);
+  rect(posicaoXPortaEsquerda + 10, posicaoYPortas + 10, larguraPorta - 20, alturaPorta - 20, 3);
+  fill(200, 160, 0);
+  ellipse(posicaoXPortaEsquerda + 95, posicaoYPortas + 100, 14, 14);
 
   fill(60, 35, 20);
-  rect(portaEsqX, portaY, portaW, portaH, 5);
-
-  fill(80, 50, 25);
-  rect(portaEsqX + 10, portaY + 10, portaW - 20, portaH - 20, 3);
-
+  rect(posicaoXPortaDireita, posicaoYPortas, larguraPorta, alturaPorta, 5);
+  fill(85, 60, 30);
+  rect(posicaoXPortaDireita + 10, posicaoYPortas + 10, larguraPorta - 20, alturaPorta - 20, 3);
   fill(200, 160, 0);
-  ellipse(portaEsqX + 95, portaY + 100, 14, 14);
-
-  fill(60, 35, 20);
-  rect(portaDirX, portaY, portaW, portaH, 5);
-
-  fill(80, 50, 25);
-  rect(portaDirX + 10, portaY + 10, portaW - 20, portaH - 20, 3);
-
-  fill(200, 160, 0);
-  ellipse(portaDirX + 25, portaY + 100, 14, 14);
-
-  if (
-    mouseX > portaEsqX &&
-    mouseX < portaEsqX + portaW &&
-    mouseY > portaY &&
-    mouseY < portaY + portaH
-  ) {
-    fill(255, 255, 0, 40);
-    rect(portaEsqX, portaY, portaW, portaH, 5);
-  }
-
-  if (
-    mouseX > portaDirX &&
-    mouseX < portaDirX + portaW &&
-    mouseY > portaY &&
-    mouseY < portaY + portaH
-  ) {
-    fill(255, 255, 0, 40);
-    rect(portaDirX, portaY, portaW, portaH, 5);
-  }
+  ellipse(posicaoXPortaDireita + 25, posicaoYPortas + 100, 14, 14);
 }
 
 function mousePressed() {
-  tocarMusicaTerror();
+  tocarMusica();
 
-  let portaW = 120;
-  let portaH = 200;
-  let portaEsqX = width * 0.15;
-  let portaDirX = width * 0.7;
-  let portaY = height * 0.25;
-
-  if (
-    mouseX > width * 0.7 + 130 &&
-    mouseX < width * 0.7 + 150 &&
-    mouseY > height * 0.25 + 80 &&
-    mouseY < height * 0.25 + 120
-  ) {
-    luzLigada = !luzLigada;
+  // INTERRUPTOR
+  if (mouseX > width * 0.7 + 130 && mouseX < width * 0.7 + 150 && mouseY > posicaoYPortas + 80 && mouseY < posicaoYPortas + 120) {
+    luzEstaLigada = !luzEstaLigada;
   }
+  
+  let larguraPorta = 120;
+  let alturaPorta = 200;
+  let posicaoXPortaEsquerda = width * 0.15;
+  let posicaoXPortaDireita = width * 0.7;
+  let posicaoYPortas = height / 2 - alturaPorta - 10;
 
-  if (
-    mouseX > portaEsqX &&
-    mouseX < portaEsqX + portaW &&
-    mouseY > portaY &&
-    mouseY < portaY + portaH
-  ) {
-    musicaTerror.stop();
+  // PORTA ESQUERDA
+  if (mouseX > posicaoXPortaEsquerda && mouseX < posicaoXPortaEsquerda + larguraPorta && mouseY > posicaoYPortas && mouseY < posicaoYPortas + alturaPorta) {
+    somMusicaTerror.stop();
     window.location.href = "escape.html";
   }
-
-  if (
-    mouseX > portaDirX &&
-    mouseX < portaDirX + portaW &&
-    mouseY > portaY &&
-    mouseY < portaY + portaH
-  ) {
-    musicaTerror.stop();
+  // PORTA DIREITA
+  if (mouseX > posicaoXPortaDireita && mouseX < posicaoXPortaDireita + larguraPorta && mouseY > posicaoYPortas && mouseY < posicaoYPortas + alturaPorta) {
+    somMusicaTerror.stop();
     window.location.href = "jumpscare.html";
   }
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  posFantasmaY = 10;
+  // Atualiza posição do objeto quando a tela muda de tamanho
+  posicaoXObjetoCentral = (width - larguraObjetoCentral) / 2;
+  posicaoYObjetoCentral = height * 0.42;
 }
