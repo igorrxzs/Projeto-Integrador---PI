@@ -106,18 +106,25 @@ function draw() {
     }
   }
 
+  // --- SEMÁFORO PRÓXIMO AOS CARROS ---
+  let alturaBase = height * 0.78;
+  let alturaPoste = height * 0.12;
+
   fill(70);
   noStroke();
-  rect(width * 0.08, height * 0.50, width * 0.007, estrada - height * 0.50);
-  fill(40);
-  rect(width * 0.073, height * 0.43, width * 0.022, height * 0.08, 5);
+  rect(width * 0.08, alturaBase - alturaPoste, width * 0.007, alturaPoste);
 
+  fill(40);
+  let caixaAltura = height * 0.075;
+  rect(width * 0.073, alturaBase - alturaPoste - caixaAltura, width * 0.022, caixaAltura, 5);
+
+  let caixaY = alturaBase - alturaPoste - caixaAltura;
   fill(tempoFarol >= 400 ? color(255, 0, 0) : color(80));
-  ellipse(width * 0.084, height * 0.445, 12, 12);
+  ellipse(width * 0.084, caixaY + height * 0.015, 12, 12);
   fill(tempoFarol >= 300 && tempoFarol < 400 ? color(255, 255, 0) : color(80));
-  ellipse(width * 0.084, height * 0.465, 12, 12);
+  ellipse(width * 0.084, caixaY + height * 0.040, 12, 12);
   fill(tempoFarol < 300 ? color(0, 255, 0) : color(80));
-  ellipse(width * 0.084, height * 0.485, 12, 12);
+  ellipse(width * 0.084, caixaY + height * 0.065, 12, 12);
 
   tempoFarol++;
   if (tempoFarol > 600) tempoFarol = 0;
@@ -214,7 +221,6 @@ function draw() {
 function mousePressed() {
   tocarMusicaGTA();
 
-  // clique no carro amarelo → fuga
   if (mouseX > xCarro && mouseX < xCarro + 120 &&
       mouseY > height * 0.77 && mouseY < height * 0.77 + 60) {
     musicaGTA.stop();
@@ -222,7 +228,6 @@ function mousePressed() {
     return;
   }
 
-  // clique no carro policia → prisao
   if (mouseX > xPolicia && mouseX < xPolicia + 120 &&
       mouseY > height * 0.77 && mouseY < height * 0.77 + 60) {
     musicaGTA.stop();
@@ -230,7 +235,6 @@ function mousePressed() {
     return;
   }
 
-  // qualquer outro clique na tela → nitro
   if (podeUsarNitro) {
     usandoNitro = true;
     podeUsarNitro = false;

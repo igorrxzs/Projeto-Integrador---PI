@@ -2,9 +2,13 @@ let imgPreso, imgPoliciais;
 let abertura = 0;
 let aberta = false;
 
+let musicaPrisao;
+
 function preload() {
   imgPreso = loadImage("../imagens/prisao/preso.png");
   imgPoliciais = loadImage("../imagens/prisao/policiais.png");
+
+  musicaPrisao = loadSound("../sons/prisao.mp3");
 }
 
 function setup() {
@@ -26,7 +30,6 @@ function draw() {
   let portaW = 140 * mx;
   let portaAb = abertura * mx;
 
-  // PAREDE PRINCIPAL
   fill(75, 80, 95);
   rect(px, py, pw, ph);
   stroke(65, 70, 85);
@@ -35,7 +38,6 @@ function draw() {
   for (let x = 110 * mx; x < pw; x += 85 * mx) line(x, py, x, py + ph);
   noStroke();
 
-  // ÁREA ATRÁS DA PORTA
   if (abertura > 0) {
     fill(75, 80, 95);
     rect(px, py, portaW, ph);
@@ -45,7 +47,6 @@ function draw() {
     noStroke();
   }
 
-  // PORTA
   fill(75, 80, 95);
   rect(px - portaAb, py, portaW, ph);
 
@@ -71,12 +72,11 @@ function draw() {
 
   stroke(8, 10, 15);
   strokeWeight(10);
-  line(px - portaAb, py + ph * 0.1,  px - portaAb + portaW, py + ph * 0.1);
+  line(px - portaAb, py + ph * 0.1, px - portaAb + portaW, py + ph * 0.1);
   line(px - portaAb, py + ph * 0.49, px - portaAb + portaW, py + ph * 0.49);
   line(px - portaAb, py + ph * 0.88, px - portaAb + portaW, py + ph * 0.88);
   noStroke();
 
-  // FECHADURA
   fill(15, 15, 20);
   rect(px - portaAb + 110 * mx, py + ph * 0.45, 30 * mx, 80 * my, 5);
   fill(40, 45, 55);
@@ -84,24 +84,22 @@ function draw() {
   fill(200, 200, 220);
   ellipse(px - portaAb + 126 * mx, py + ph * 0.52, 8 * mx, 8 * my);
 
-  // ANIMAÇÃO PORTA
   if (aberta && abertura < 140) abertura += 4;
   if (!aberta && abertura > 0) abertura -= 4;
 
-  // JANELA
   fill(50, 60, 80);
   rect(width * 0.4, py + ph * 0.03, width * 0.2, ph * 0.24);
   for (let i = 0; i < 100; i += 10) {
     fill(180 - i, 200 - i / 2, 255 - i / 3, 130 - i);
-    rect(width * 0.405 + i / 2, py + ph * 0.04 + i / 2, (width * 0.19 - i) , (ph * 0.22 - i));
+    rect(width * 0.405 + i / 2, py + ph * 0.04 + i / 2, width * 0.19 - i, ph * 0.22 - i);
   }
+
   stroke(25, 30, 45);
   strokeWeight(3);
   line(width * 0.5, py + ph * 0.03, width * 0.5, py + ph * 0.27);
   line(width * 0.4, py + ph * 0.15, width * 0.6, py + ph * 0.15);
   noStroke();
 
-  // MOBÍLIA
   fill(60, 40, 30);
   rect(width * 0.72, height * 0.68, width * 0.18, height * 0.14);
   fill(160, 130, 100);
@@ -109,20 +107,18 @@ function draw() {
   fill(70, 50, 30);
   rect(width * 0.22, height * 0.70, width * 0.13, height * 0.12);
 
-  // PRESO
   image(imgPreso, width * 0.43, height * 0.37, width * 0.18, height * 0.50);
 
-  // CHÃO
   fill(50, 55, 65);
   rect(px, height * 0.83, pw, height * 0.17);
   fill(60, 65, 75);
   for (let x = 0; x < width; x += 45 * mx) rect(x, height * 0.83, 22 * mx, height * 0.17);
+
   stroke(35, 40, 50);
   strokeWeight(3);
   line(px, height * 0.83, px + pw, height * 0.83);
   noStroke();
 
-  // GRADES
   stroke(8, 10, 15);
   strokeWeight(5);
   for (let x = portaW; x <= width; x += 45 * mx) {
@@ -131,6 +127,7 @@ function draw() {
     line(x + 1, py, x + 1, py + ph);
     stroke(8, 10, 15);
   }
+
   strokeWeight(7);
   line(portaW, py + ph * 0.10, width, py + ph * 0.10);
   line(portaW, py + ph * 0.31, width, py + ph * 0.31);
@@ -138,11 +135,16 @@ function draw() {
   line(portaW, py + ph * 0.75, width, py + ph * 0.75);
   noStroke();
 
-  // POLICIAIS
   image(imgPoliciais, width * 0.20, height * 0.37, width * 0.25, height * 0.57);
 }
 
 function mousePressed() {
+  if (musicaPrisao && !musicaPrisao.isPlaying()) {
+    userStartAudio();
+    musicaPrisao.setVolume(0.4);
+    musicaPrisao.loop();
+  }
+
   let mx = width / 1000;
   let portaW = 140 * mx;
   let ph = height * 0.83;

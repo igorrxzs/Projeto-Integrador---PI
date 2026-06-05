@@ -2,10 +2,13 @@ let fase = 0;
 let tempo = 0;
 let tremX = 0;
 let tremY = 0;
-let jumpscare;
+
+let imgJumpscare;
+let audioJumpscare;
 
 function preload() {
-  jumpscare = loadImage("../imagens/corredorassombrado/jumpscare.jpeg");
+  imgJumpscare = loadImage("../imagens/corredorassombrado/jumpscare.jpeg");
+  audioJumpscare = loadSound("../sons/jumpscare.mp3");
 }
 
 function setup() {
@@ -18,14 +21,21 @@ function draw() {
   if (fase === 0) {
     background(0);
 
-    fill(180, 0, 0, map(tempo, 0, 60, 0, 180));
+    fill(120, 0, 0, map(tempo, 0, 90, 0, 180));
     noStroke();
     rect(0, 0, width, height);
 
-    fill(255);
-    textAlign(CENTER, CENTER);
-    textSize(36);
-    text("Você escolheu a porta errada...", width / 2, height / 2);
+    stroke(90, 0, 0, 120);
+    strokeWeight(10);
+
+    for (let x = 70; x < width; x += 100) {
+      line(x, 0, x, height);
+    }
+
+    line(0, height * 0.32, width, height * 0.32);
+    line(0, height * 0.64, width, height * 0.64);
+
+    noStroke();
 
     if (tempo > 90) {
       fase = 1;
@@ -35,6 +45,9 @@ function draw() {
   } else if (fase === 1) {
     background(0);
 
+    tremX = random(-5, 5);
+    tremY = random(-5, 5);
+
     let imgW = width;
     let imgH = width * 0.5625;
 
@@ -43,18 +56,10 @@ function draw() {
       imgW = height * 1.777;
     }
 
-    let imgX = width / 2 - imgW / 2;
-    let imgY = height / 2 - imgH / 2;
+    let imgX = width / 2 - imgW / 2 + tremX;
+    let imgY = height / 2 - imgH / 2 + tremY;
 
-    image(jumpscare, imgX, imgY, imgW, imgH);
-
-    tremX = random(-8, 8);
-    tremY = random(-8, 8);
-
-    fill(255);
-    textAlign(CENTER, CENTER);
-    textSize(90);
-    text("NÃO!", width / 2 + tremX, height / 2 + tremY);
+    image(imgJumpscare, imgX, imgY, imgW, imgH);
 
     if (tempo > 80) {
       fase = 2;
@@ -78,22 +83,29 @@ function draw() {
     strokeWeight(14);
     line(0, height * 0.3, width, height * 0.3);
     line(0, height * 0.6, width, height * 0.6);
+
     noStroke();
 
     if (tempo > 40) {
       fill(255, map(tempo, 40, 100, 0, 255));
       textAlign(CENTER, CENTER);
       textSize(28);
-      text("Infelizmente essa não era a saída...", width / 2, height * 0.42);
-
-      textSize(18);
-      fill(200, map(tempo, 60, 120, 0, 200));
-      text("Clique para tentar novamente", width / 2, height * 0.58);
+      text("Clique para voltar ao corredor", width / 2, height * 0.5);
     }
   }
 }
 
 function mousePressed() {
+  if (fase === 1) {
+    userStartAudio();
+
+    if (audioJumpscare) {
+      audioJumpscare.stop();
+      audioJumpscare.setVolume(0.8);
+      audioJumpscare.play();
+    }
+  }
+
   if (fase === 2 && tempo > 60) {
     window.location.href = "corredorassombrado.html";
   }

@@ -1,17 +1,20 @@
 let floresta, crianca, fantasma;
+let musicaEscape;
+
 let posCrianca = 620;
 let posFantasma = 620;
 let velocidadeCrianca = 1.6;
 let velocidadeFantasma = 1.6;
 let fantasmaAtivado = false;
 
-// Variáveis para escala
 let escala = 1;
 
 function preload() {
   floresta = loadImage("../imagens/fugadamenina/casa.jpeg");
-  crianca  = loadImage("../imagens/fugadamenina/meninoremovebg.png");
+  crianca = loadImage("../imagens/fugadamenina/meninoremovebg.png");
   fantasma = loadImage("../imagens/fugadamenina/ghost.png");
+
+  musicaEscape = loadSound("../sons/escape.ogg");
 }
 
 function setup() {
@@ -20,14 +23,12 @@ function setup() {
 }
 
 function draw() {
-  background(0); // Fundo preto nas bordas se não preencher tudo
-  
-  // Centraliza o conteúdo na tela
+  background(0);
+
   push();
   translate((width - 800 * escala) / 2, (height - 450 * escala) / 2);
   scale(escala);
 
-  // Desenho do jogo
   image(floresta, 0, 0, 800, 450);
 
   if (posCrianca > -300) {
@@ -40,15 +41,14 @@ function draw() {
   }
 
   image(crianca, posCrianca, 350, 180, 100);
-  
+
   pop();
 }
 
 function calcularEscala() {
-  // Calcula quanto cabe na tela mantendo a proporção 800x450
   let escalaW = windowWidth / 800;
   let escalaH = windowHeight / 450;
-  escala = min(escalaW, escalaH);
+  escala = max(escalaW, escalaH);
 }
 
 function windowResized() {
@@ -57,6 +57,12 @@ function windowResized() {
 }
 
 function mousePressed() {
+  if (musicaEscape && !musicaEscape.isPlaying()) {
+    userStartAudio();
+    musicaEscape.setVolume(0.4);
+    musicaEscape.loop();
+  }
+
   if (posCrianca < 400) {
     fantasmaAtivado = true;
   }
