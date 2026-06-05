@@ -1,14 +1,13 @@
-let fase = 0;
-let tempo = 0;
+let jumpscare;
+let somSusto;
 let tremX = 0;
 let tremY = 0;
 
-let imgJumpscare;
-let audioJumpscare;
+let tempo = 0;
 
 function preload() {
-  imgJumpscare = loadImage("../imagens/corredorassombrado/jumpscare.jpeg");
-  audioJumpscare = loadSound("../sons/jumpscare.mp3");
+  jumpscare = loadImage("../imagens/corredorassombrado/jumpscare.jpeg");
+  somSusto = loadSound("../sons/jumpscare.mp3");
 }
 
 function setup() {
@@ -16,98 +15,51 @@ function setup() {
 }
 
 function draw() {
+  background(0);
   tempo++;
 
-  if (fase === 0) {
-    background(0);
+  // Ajusta a imagem para preencher a tela
+  let imgW = width;
+  let imgH = width * 0.5625;
 
-    fill(120, 0, 0, map(tempo, 0, 90, 0, 180));
-    noStroke();
-    rect(0, 0, width, height);
+  if (imgH < height) {
+    imgH = height;
+    imgW = height * 1.777;
+  }
 
-    stroke(90, 0, 0, 120);
-    strokeWeight(10);
+  let imgX = width / 2 - imgW / 2;
+  let imgY = height / 2 - imgH / 2;
 
-    for (let x = 70; x < width; x += 100) {
-      line(x, 0, x, height);
-    }
+  image(jumpscare, imgX, imgY, imgW, imgH);
 
-    line(0, height * 0.32, width, height * 0.32);
-    line(0, height * 0.64, width, height * 0.64);
+// Tremor mais suave
+tremX = random(-5, 5);
+tremY = random(-5, 5);
 
-    noStroke();
+  // Fundo escuro atrás do texto para melhorar leitura
+  fill(0, 0, 0, 150);
+  rect(0, height * 0.38, width, height * 0.18);
 
-    if (tempo > 90) {
-      fase = 1;
-      tempo = 0;
-    }
+  fill(255);
+  textAlign(CENTER, CENTER);
+  textSize(70);
+  textStyle(BOLD);
+  text("PORTA ERRADA", width / 2 + tremX, height / 2 + tremY);
 
-  } else if (fase === 1) {
-    background(0);
-
-    tremX = random(-5, 5);
-    tremY = random(-5, 5);
-
-    let imgW = width;
-    let imgH = width * 0.5625;
-
-    if (imgH < height) {
-      imgH = height;
-      imgW = height * 1.777;
-    }
-
-    let imgX = width / 2 - imgW / 2 + tremX;
-    let imgY = height / 2 - imgH / 2 + tremY;
-
-    image(imgJumpscare, imgX, imgY, imgW, imgH);
-
-    if (tempo > 80) {
-      fase = 2;
-      tempo = 0;
-    }
-
-  } else if (fase === 2) {
-    background(0);
-
-    fill(120, 0, 0, map(tempo, 0, 40, 0, 255));
-    noStroke();
-    rect(0, 0, width, height);
-
-    stroke(100, 0, 0, map(tempo, 0, 60, 0, 180));
-    strokeWeight(12);
-
-    for (let x = 80; x < width; x += 90) {
-      line(x, 0, x, height);
-    }
-
-    strokeWeight(14);
-    line(0, height * 0.3, width, height * 0.3);
-    line(0, height * 0.6, width, height * 0.6);
-
-    noStroke();
-
-    if (tempo > 40) {
-      fill(255, map(tempo, 40, 100, 0, 255));
-      textAlign(CENTER, CENTER);
-      textSize(28);
-      text("Clique para voltar ao corredor", width / 2, height * 0.5);
-    }
+  // Mantém a tela por bastante tempo
+  if (tempo > 600) {
+    image(jumpscare, imgX, imgY, imgW, imgH);
   }
 }
 
 function mousePressed() {
-  if (fase === 1) {
-    userStartAudio();
+  userStartAudio();
 
-    if (audioJumpscare) {
-      audioJumpscare.stop();
-      audioJumpscare.setVolume(0.8);
-      audioJumpscare.play();
-    }
-  }
-
-  if (fase === 2 && tempo > 60) {
-    window.location.href = "corredorassombrado.html";
+  // Toca o grito sempre que clicar
+  if (somSusto) {
+    somSusto.stop();
+    somSusto.setVolume(1.0);
+    somSusto.play();
   }
 }
 

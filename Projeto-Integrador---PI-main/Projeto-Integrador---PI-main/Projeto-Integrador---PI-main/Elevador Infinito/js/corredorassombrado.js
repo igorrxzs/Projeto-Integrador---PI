@@ -1,6 +1,5 @@
 let fantasma;
 let crianca;
-let quintas;
 let luzLigada = true;
 let posFantasmaX;
 let posFantasmaY;
@@ -40,6 +39,20 @@ function draw() {
 
   background(40, 45, 50);
 
+  let portaW = 120;
+  let portaH = 200;
+  let portaEsqX = width * 0.15;
+  let portaDirX = width * 0.7;
+  let portaY = height * 0.25;
+
+  let meioEntrePortas = (portaEsqX + portaW + portaDirX) / 2;
+  let espacoEntrePortas = portaDirX - (portaEsqX + portaW);
+
+  let janelaW = espacoEntrePortas * 0.92;
+  let janelaH = 230;
+  let janelaX = meioEntrePortas - janelaW / 2;
+  let janelaY = 20;
+
   noStroke();
   fill(120, 20, 20);
   rect(0, height / 2, width, height / 2);
@@ -60,41 +73,43 @@ function draw() {
   noStroke();
 
   fill(15, 15, 25);
-  rect(width / 2 - 200, 30, 400, 140, 6);
+  rect(janelaX, janelaY, janelaW, janelaH, 6);
 
   fill(255, 255, 255, 10);
-  rect(width / 2 - 190, 40, 380, 120, 4);
+  rect(janelaX + 12, janelaY + 12, janelaW - 24, janelaH - 24, 4);
+
+  fill(180, 180, 200, 18);
+  ellipse(janelaX + janelaW * 0.25, janelaY + janelaH * 0.65, janelaW * 0.45, janelaH * 0.25);
+  ellipse(janelaX + janelaW * 0.55, janelaY + janelaH * 0.55, janelaW * 0.50, janelaH * 0.22);
+  ellipse(janelaX + janelaW * 0.78, janelaY + janelaH * 0.72, janelaW * 0.40, janelaH * 0.20);
 
   noFill();
   stroke(140);
   strokeWeight(3);
-  rect(width / 2 - 200, 30, 400, 140, 6);
+  rect(janelaX, janelaY, janelaW, janelaH, 6);
 
   stroke(90);
   strokeWeight(2);
-
-  line(width / 2, 30, width / 2, 170);
-  line(width / 2 - 100, 30, width / 2 - 100, 170);
-  line(width / 2 + 100, 30, width / 2 + 100, 170);
-  line(width / 2 - 200, 100, width / 2 + 200, 100);
+  line(janelaX + janelaW * 0.25, janelaY, janelaX + janelaW * 0.25, janelaY + janelaH);
+  line(janelaX + janelaW * 0.50, janelaY, janelaX + janelaW * 0.50, janelaY + janelaH);
+  line(janelaX + janelaW * 0.75, janelaY, janelaX + janelaW * 0.75, janelaY + janelaH);
+  line(janelaX, janelaY + janelaH * 0.50, janelaX + janelaW, janelaY + janelaH * 0.50);
 
   noStroke();
   fill(0, 0, 0, 80);
-  rect(width / 2 - 200, 30, 400, 20);
-  rect(width / 2 - 200, 150, 400, 20);
+  rect(janelaX, janelaY, janelaW, 25);
+  rect(janelaX, janelaY + janelaH - 25, janelaW, 25);
 
   fill(140, 0, 0, 200);
-
-  for (let i = 0; i < 6; i++) {
-    rect(width / 2 - 200 + i * 10, 30, 15, 140);
-    rect(width / 2 + 135 + i * 10, 30, 15, 140);
+  for (let i = 0; i < 8; i++) {
+    rect(janelaX + i * 12, janelaY, 18, janelaH);
+    rect(janelaX + janelaW - 100 + i * 12, janelaY, 18, janelaH);
   }
 
   fill(80, 0, 0, 120);
-
-  for (let i = 0; i < 6; i++) {
-    rect(width / 2 - 200 + i * 10, 30, 8, 140);
-    rect(width / 2 + 135 + i * 10, 30, 8, 140);
+  for (let i = 0; i < 8; i++) {
+    rect(janelaX + i * 12, janelaY, 9, janelaH);
+    rect(janelaX + janelaW - 100 + i * 12, janelaY, 9, janelaH);
   }
 
   if (luzLigada) {
@@ -102,9 +117,9 @@ function draw() {
     strokeWeight(4);
     randomSeed(frameCount * 0.1);
 
-    for (let i = 0; i < 8; i++) {
-      let px = random(width / 2 - 180, width / 2 + 180);
-      let py = random(40, 160);
+    for (let i = 0; i < 12; i++) {
+      let px = random(janelaX + 30, janelaX + janelaW - 30);
+      let py = random(janelaY + 20, janelaY + janelaH - 20);
       point(px, py);
     }
   }
@@ -115,9 +130,8 @@ function draw() {
 
   noStroke();
   fill(luzLigada ? 240 : 80);
-  ellipse(width / 2, 100, 100, 100);
+  ellipse(janelaX + janelaW / 2, janelaY + janelaH * 0.45, 130, 130);
 
-  noStroke();
   fill(230);
   rect(width * 0.7 + 130, height * 0.25 + 80, 20, 40);
 
@@ -140,59 +154,77 @@ function draw() {
   noStroke();
 
   fill(60, 35, 20);
-  rect(width * 0.15, height * 0.25, 120, 200, 5);
+  rect(portaEsqX, portaY, portaW, portaH, 5);
 
   fill(80, 50, 25);
-  rect(width * 0.15 + 10, height * 0.25 + 10, 100, 180, 3);
+  rect(portaEsqX + 10, portaY + 10, portaW - 20, portaH - 20, 3);
 
   fill(200, 160, 0);
-  ellipse(width * 0.15 + 95, height * 0.25 + 100, 14, 14);
+  ellipse(portaEsqX + 95, portaY + 100, 14, 14);
 
   fill(60, 35, 20);
-  rect(width * 0.7, height * 0.25, 120, 200, 5);
+  rect(portaDirX, portaY, portaW, portaH, 5);
 
   fill(80, 50, 25);
-  rect(width * 0.7 + 10, height * 0.25 + 10, 100, 180, 3);
+  rect(portaDirX + 10, portaY + 10, portaW - 20, portaH - 20, 3);
 
   fill(200, 160, 0);
-  ellipse(width * 0.7 + 25, height * 0.25 + 100, 14, 14);
+  ellipse(portaDirX + 25, portaY + 100, 14, 14);
 
   if (
-    mouseX > width * 0.15 && 
-    mouseX < width * 0.15 + 120 && 
-    mouseY > height * 0.25 && 
-    mouseY < height * 0.25 + 200
+    mouseX > portaEsqX &&
+    mouseX < portaEsqX + portaW &&
+    mouseY > portaY &&
+    mouseY < portaY + portaH
   ) {
     fill(255, 255, 0, 40);
-    rect(width * 0.15, height * 0.25, 120, 200, 5);
+    rect(portaEsqX, portaY, portaW, portaH, 5);
   }
 
   if (
-    mouseX > width * 0.7 && 
-    mouseX < width * 0.7 + 120 && 
-    mouseY > height * 0.25 && 
-    mouseY < height * 0.25 + 200
+    mouseX > portaDirX &&
+    mouseX < portaDirX + portaW &&
+    mouseY > portaY &&
+    mouseY < portaY + portaH
   ) {
     fill(255, 255, 0, 40);
-    rect(width * 0.7, height * 0.25, 120, 200, 5);
+    rect(portaDirX, portaY, portaW, portaH, 5);
   }
 }
 
 function mousePressed() {
   tocarMusicaTerror();
 
-  if (mouseX > width * 0.7 + 130 && mouseX < width * 0.7 + 150 && mouseY > height * 0.25 + 80 && mouseY < height * 0.25 + 120
+  let portaW = 120;
+  let portaH = 200;
+  let portaEsqX = width * 0.15;
+  let portaDirX = width * 0.7;
+  let portaY = height * 0.25;
+
+  if (
+    mouseX > width * 0.7 + 130 &&
+    mouseX < width * 0.7 + 150 &&
+    mouseY > height * 0.25 + 80 &&
+    mouseY < height * 0.25 + 120
   ) {
     luzLigada = !luzLigada;
   }
 
-  if (mouseX > width * 0.15 && mouseX < width * 0.15 + 120 && mouseY > height * 0.25 && mouseY < height * 0.25 + 200
+  if (
+    mouseX > portaEsqX &&
+    mouseX < portaEsqX + portaW &&
+    mouseY > portaY &&
+    mouseY < portaY + portaH
   ) {
     musicaTerror.stop();
     window.location.href = "escape.html";
   }
 
-  if (mouseX > width * 0.7 && mouseX < width * 0.7 + 120 && mouseY > height * 0.25 && mouseY < height * 0.25 + 200
+  if (
+    mouseX > portaDirX &&
+    mouseX < portaDirX + portaW &&
+    mouseY > portaY &&
+    mouseY < portaY + portaH
   ) {
     musicaTerror.stop();
     window.location.href = "jumpscare.html";
