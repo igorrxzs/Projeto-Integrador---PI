@@ -18,10 +18,10 @@ function draw() {
   let mx = width / 1000;
   let my = height / 600;
 
-  let px = 50 * mx;
-  let py = 40 * my;
-  let pw = 900 * mx;
-  let ph = 460 * my;
+  let px = 0;
+  let py = 0;
+  let pw = width;
+  let ph = height * 0.83;
 
   let portaW = 140 * mx;
   let portaAb = abertura * mx;
@@ -31,8 +31,8 @@ function draw() {
   rect(px, py, pw, ph);
   stroke(65, 70, 85);
   strokeWeight(1.5);
-  for (let y = 85 * my; y < 500 * my; y += 65 * my) line(px, py + y - py, px + pw, py + y - py);
-  for (let x = 110 * mx; x < 950 * mx; x += 85 * mx) line(px + x - px, py, px + x - px, py + ph);
+  for (let y = 85 * my; y < ph; y += 65 * my) line(px, y, px + pw, y);
+  for (let x = 110 * mx; x < pw; x += 85 * mx) line(x, py, x, py + ph);
   noStroke();
 
   // ÁREA ATRÁS DA PORTA
@@ -41,7 +41,7 @@ function draw() {
     rect(px, py, portaW, ph);
     stroke(65, 70, 85);
     strokeWeight(1.5);
-    for (let y = 85 * my; y < 500 * my; y += 65 * my) line(px, py + y - py, px + portaW, py + y - py);
+    for (let y = 85 * my; y < ph; y += 65 * my) line(px, y, px + portaW, y);
     noStroke();
   }
 
@@ -51,11 +51,8 @@ function draw() {
 
   stroke(65, 70, 85);
   strokeWeight(1.5);
-  for (let y = 85 * my; y < 500 * my; y += 65 * my) {
-    line(px - portaAb, py + y - py, px - portaAb + portaW, py + y - py);
-  }
-  for (let xl = 110 * mx; xl < 190 * mx; xl += 85 * mx) {
-    line(px - portaAb + xl - px, py, px - portaAb + xl - px, py + ph);
+  for (let y = 85 * my; y < ph; y += 65 * my) {
+    line(px - portaAb, y, px - portaAb + portaW, y);
   }
 
   stroke(8, 10, 15);
@@ -74,95 +71,83 @@ function draw() {
 
   stroke(8, 10, 15);
   strokeWeight(10);
-  line(px - portaAb, py + 45 * my, px - portaAb + portaW, py + 45 * my);
-  line(px - portaAb, py + 225 * my, px - portaAb + portaW, py + 225 * my);
-  line(px - portaAb, py + 405 * my, px - portaAb + portaW, py + 405 * my);
+  line(px - portaAb, py + ph * 0.1,  px - portaAb + portaW, py + ph * 0.1);
+  line(px - portaAb, py + ph * 0.49, px - portaAb + portaW, py + ph * 0.49);
+  line(px - portaAb, py + ph * 0.88, px - portaAb + portaW, py + ph * 0.88);
   noStroke();
 
   // FECHADURA
   fill(15, 15, 20);
-  rect(px - portaAb + 110 * mx, py + 210 * my, 30 * mx, 80 * my, 5);
+  rect(px - portaAb + 110 * mx, py + ph * 0.45, 30 * mx, 80 * my, 5);
   fill(40, 45, 55);
-  rect(px - portaAb + 116 * mx, py + 225 * my, 16 * mx, 50 * my);
+  rect(px - portaAb + 116 * mx, py + ph * 0.48, 16 * mx, 50 * my);
   fill(200, 200, 220);
-  ellipse(px - portaAb + 126 * mx, py + 250 * my, 8 * mx, 8 * my);
+  ellipse(px - portaAb + 126 * mx, py + ph * 0.52, 8 * mx, 8 * my);
 
   // ANIMAÇÃO PORTA
   if (aberta && abertura < 140) abertura += 4;
   if (!aberta && abertura > 0) abertura -= 4;
 
-  // FAIXA LATERAL
-  fill(75, 80, 95);
-  noStroke();
-  rect(0, 0, px, height);
-  stroke(65, 70, 85);
-  strokeWeight(1.5);
-  line(px, py + 45 * my, px, py + ph);
-  noStroke();
-
   // JANELA
   fill(50, 60, 80);
-  rect(400 * mx, py + 15 * my, 200 * mx, 140 * my);
+  rect(width * 0.4, py + ph * 0.03, width * 0.2, ph * 0.24);
   for (let i = 0; i < 100; i += 10) {
     fill(180 - i, 200 - i / 2, 255 - i / 3, 130 - i);
-    rect(405 * mx + i / 2, py + 20 * my + i / 2, (190 - i) * mx, (130 - i) * my);
+    rect(width * 0.405 + i / 2, py + ph * 0.04 + i / 2, (width * 0.19 - i) , (ph * 0.22 - i));
   }
   stroke(25, 30, 45);
   strokeWeight(3);
-  line(500 * mx, py + 15 * my, 500 * mx, py + 155 * my);
-  line(400 * mx, py + 85 * my, 600 * mx, py + 85 * my);
+  line(width * 0.5, py + ph * 0.03, width * 0.5, py + ph * 0.27);
+  line(width * 0.4, py + ph * 0.15, width * 0.6, py + ph * 0.15);
   noStroke();
 
   // MOBÍLIA
   fill(60, 40, 30);
-  rect(720 * mx, 410 * my, 180 * mx, 85 * my);
+  rect(width * 0.72, height * 0.68, width * 0.18, height * 0.14);
   fill(160, 130, 100);
-  rect(720 * mx, 410 * my, 180 * mx, 28 * my);
+  rect(width * 0.72, height * 0.68, width * 0.18, height * 0.047);
   fill(70, 50, 30);
-  rect(220 * mx, 420 * my, 130 * mx, 70 * my);
+  rect(width * 0.22, height * 0.70, width * 0.13, height * 0.12);
 
   // PRESO
-  image(imgPreso, 430 * mx, 220 * my, 180 * mx, 300 * my);
+  image(imgPreso, width * 0.43, height * 0.37, width * 0.18, height * 0.50);
 
   // CHÃO
   fill(50, 55, 65);
-  rect(px, 500 * my, pw, 100 * my);
+  rect(px, height * 0.83, pw, height * 0.17);
   fill(60, 65, 75);
-  for (let x = 50 * mx; x < 950 * mx; x += 45 * mx) rect(x, 500 * my, 22 * mx, 100 * my);
+  for (let x = 0; x < width; x += 45 * mx) rect(x, height * 0.83, 22 * mx, height * 0.17);
   stroke(35, 40, 50);
   strokeWeight(3);
-  line(px, 500 * my, px + pw, 500 * my);
+  line(px, height * 0.83, px + pw, height * 0.83);
   noStroke();
 
   // GRADES
   stroke(8, 10, 15);
   strokeWeight(5);
-  for (let x = 190 * mx; x <= 900 * mx; x += 45 * mx) {
+  for (let x = portaW; x <= width; x += 45 * mx) {
     line(x, py, x, py + ph);
     stroke(22, 25, 35);
     line(x + 1, py, x + 1, py + ph);
     stroke(8, 10, 15);
   }
   strokeWeight(7);
-  line(190 * mx, py + 45 * my, 900 * mx, py + 45 * my);
-  line(190 * mx, py + 180 * my, 900 * mx, py + 180 * my);
-  line(190 * mx, py + 310 * my, 900 * mx, py + 310 * my);
-  line(190 * mx, py + 440 * my, 900 * mx, py + 440 * my);
+  line(portaW, py + ph * 0.10, width, py + ph * 0.10);
+  line(portaW, py + ph * 0.31, width, py + ph * 0.31);
+  line(portaW, py + ph * 0.53, width, py + ph * 0.53);
+  line(portaW, py + ph * 0.75, width, py + ph * 0.75);
   noStroke();
 
   // POLICIAIS
-  image(imgPoliciais, 200 * mx, 220 * my, 250 * mx, 340 * my);
+  image(imgPoliciais, width * 0.20, height * 0.37, width * 0.25, height * 0.57);
 }
 
 function mousePressed() {
   let mx = width / 1000;
-  let my = height / 600;
-  let px = 50 * mx;
-  let py = 40 * my;
   let portaW = 140 * mx;
-  let ph = 460 * my;
+  let ph = height * 0.83;
 
-  if (mouseX > px && mouseX < px + portaW && mouseY > py && mouseY < py + ph) {
+  if (mouseX > 0 && mouseX < portaW && mouseY > 0 && mouseY < ph) {
     aberta = !aberta;
   }
 }

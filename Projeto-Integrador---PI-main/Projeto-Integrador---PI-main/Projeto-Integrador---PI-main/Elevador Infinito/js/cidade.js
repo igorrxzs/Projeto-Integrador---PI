@@ -108,16 +108,16 @@ function draw() {
 
   fill(70);
   noStroke();
-  rect(width * 0.08, height * 0.45, width * 0.007, estrada - height * 0.45);
+  rect(width * 0.08, height * 0.50, width * 0.007, estrada - height * 0.50);
   fill(40);
-  rect(width * 0.073, height * 0.38, width * 0.022, height * 0.08, 5);
+  rect(width * 0.073, height * 0.43, width * 0.022, height * 0.08, 5);
 
   fill(tempoFarol >= 400 ? color(255, 0, 0) : color(80));
-  ellipse(width * 0.084, height * 0.395, 12, 12);
+  ellipse(width * 0.084, height * 0.445, 12, 12);
   fill(tempoFarol >= 300 && tempoFarol < 400 ? color(255, 255, 0) : color(80));
-  ellipse(width * 0.084, height * 0.415, 12, 12);
+  ellipse(width * 0.084, height * 0.465, 12, 12);
   fill(tempoFarol < 300 ? color(0, 255, 0) : color(80));
-  ellipse(width * 0.084, height * 0.435, 12, 12);
+  ellipse(width * 0.084, height * 0.485, 12, 12);
 
   tempoFarol++;
   if (tempoFarol > 600) tempoFarol = 0;
@@ -150,9 +150,27 @@ function draw() {
   xCarro -= velocidadeCarro;
   xPolicia -= 2;
 
+  if (xPolicia < -150) {
+    xCarro = width + 200;
+    xPolicia = width + 450;
+  }
+
   if (carro) image(carro, xCarro, height * 0.77, 120, 60);
   if (carroPolicia) image(carroPolicia, xPolicia, height * 0.77, 120, 60);
 
+  // tooltip carro amarelo
+  let dCarro = dist(mouseX, mouseY, xCarro + 60, height * 0.77 + 30);
+  if (dCarro < 70) {
+    fill(255, 255, 0, 220);
+    noStroke();
+    rect(xCarro - 10, height * 0.77 - 30, 155, 22, 5);
+    fill(0);
+    textAlign(LEFT, TOP);
+    textSize(12);
+    text("Carro da fuga! →", xCarro - 5, height * 0.77 - 27);
+  }
+
+  // tooltip policia
   let dPolicia = dist(mouseX, mouseY, xPolicia + 60, height * 0.77 + 30);
   if (dPolicia < 70) {
     fill(255, 255, 255, 200);
@@ -172,44 +190,50 @@ function draw() {
     }
   }
 
-  if (xPolicia < -150) {
-    xCarro = width * 0.5;
-    xPolicia = width * 0.65;
-  }
-
+  // PAINEL NITRO
   let painelX = 15;
   let painelY = 15;
   let painelW = 180;
-  let painelH = 40;
+  let painelH = 55;
 
   fill(0, 0, 0, 180);
   noStroke();
   rect(painelX, painelY, painelW, painelH, 5);
 
   fill(podeUsarNitro ? color(0, 200, 0) : color(200, 0, 0));
-  rect(painelX + 3, painelY + 24, map(nitro, 0, 100, 0, painelW - 6), 10, 3);
+  rect(painelX + 3, painelY + 37, map(nitro, 0, 100, 0, painelW - 6), 10, 3);
 
   fill(255);
   textSize(11);
   textAlign(LEFT, TOP);
-  text(podeUsarNitro ? "NITRO: PRONTO! (clique no carro)" : "NITRO: RECARREGANDO..", painelX + 5, painelY + 5);
+  text(podeUsarNitro ? "NITRO: PRONTO!" : "NITRO: RECARREGANDO..", painelX + 5, painelY + 5);
+  fill(200);
+  text("Clique na tela para usar", painelX + 5, painelY + 20);
 }
 
 function mousePressed() {
   tocarMusicaGTA();
 
+  // clique no carro amarelo → fuga
   if (mouseX > xCarro && mouseX < xCarro + 120 &&
       mouseY > height * 0.77 && mouseY < height * 0.77 + 60) {
-    if (podeUsarNitro) {
-      usandoNitro = true;
-      podeUsarNitro = false;
-    }
+    musicaGTA.stop();
+    window.location.href = "fuga.html";
+    return;
   }
 
+  // clique no carro policia → prisao
   if (mouseX > xPolicia && mouseX < xPolicia + 120 &&
       mouseY > height * 0.77 && mouseY < height * 0.77 + 60) {
     musicaGTA.stop();
     window.location.href = "prisao.html";
+    return;
+  }
+
+  // qualquer outro clique na tela → nitro
+  if (podeUsarNitro) {
+    usandoNitro = true;
+    podeUsarNitro = false;
   }
 }
 

@@ -8,9 +8,17 @@ let viajando = false;
 let tempoViagem = 0;
 let tempo = 0;
 
+let musicaElevador;
+
+function preload() {
+  musicaElevador = loadSound("sons/elevador.mp3");
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  aberta = true;
+  aberta = false;
+  musicaElevador.setVolume(0.4);
+  musicaElevador.loop();
 }
 
 function draw() {
@@ -131,18 +139,6 @@ function draw() {
     text(andar, metade, tetoH * 0.25 + 22);
   }
 
-  // BOTÃO ENTRAR
-  if (aberta && abertura >= metaPorta - 10 && andar !== 2) {
-    fill(255, 200, 0, 220);
-    noStroke();
-    rect(metade - 90, height - 80, 180, 44, 10);
-    fill(0);
-    textAlign(CENTER, CENTER);
-    textSize(16);
-    if (andar === 1) text("Entrar → Corredor", metade, height - 58);
-    if (andar === 3) text("Entrar → Cidade", metade, height - 58);
-  }
-
   // ABRIR / FECHAR PORTA
   if (aberta && abertura < metaPorta) abertura += 4;
   if (!aberta && abertura > 0) abertura -= 4;
@@ -225,38 +221,48 @@ function desenharCidadePrevia(px, py, pw, ph) {
 }
 
 function mousePressed() {
+  userStartAudio();
+
   let paredeW = width * 0.18;
   let painelW = 110;
   let painelH = 200;
   let painelX = width - paredeW / 2 - painelW / 2 - 20;
   let painelY = height / 2 - painelH / 2;
-  let portaW = width * 0.77 - width * 0.23;
+  let portaL = width * 0.23;
+  let portaR = width * 0.77;
+  let portaW = portaR - portaL;
   let metaPorta = portaW / 2 - 10;
+  let tetoH = height * 0.13;
+  let chaoY = height * 0.83;
 
   // BOTÃO SUBIR
-  if (dist(mouseX, mouseY, painelX + painelW / 2, painelY + painelH * 0.3) < 30) {
+  if (mouseX > painelX + painelW / 2 - 30 && mouseX < painelX + painelW / 2 + 30 &&
+      mouseY > painelY + painelH * 0.3 - 30 && mouseY < painelY + painelH * 0.3 + 30) {
     if (andar < 3 && !viajando) {
       aberta = false;
       destino = andar + 1;
       viajando = true;
       tempoViagem = 120;
     }
+    return;
   }
 
   // BOTÃO DESCER
-  if (dist(mouseX, mouseY, painelX + painelW / 2, painelY + painelH * 0.7) < 30) {
+  if (mouseX > painelX + painelW / 2 - 30 && mouseX < painelX + painelW / 2 + 30 &&
+      mouseY > painelY + painelH * 0.7 - 30 && mouseY < painelY + painelH * 0.7 + 30) {
     if (andar > 1 && !viajando) {
       aberta = false;
       destino = andar - 1;
       viajando = true;
       tempoViagem = 120;
     }
+    return;
   }
 
-  // BOTÃO ENTRAR
+  // CLICAR NA PORTA ABERTA
   if (aberta && abertura >= metaPorta - 10 && andar !== 2) {
-    if (mouseX > width / 2 - 90 && mouseX < width / 2 + 90 &&
-        mouseY > height - 80 && mouseY < height - 36) {
+    if (mouseX > portaL && mouseX < portaR && mouseY > tetoH && mouseY < chaoY) {
+      musicaElevador.stop();
       if (andar === 1) window.location.href = "paginas/corredorassombrado.html";
       if (andar === 3) window.location.href = "paginas/cidade.html";
     }
